@@ -206,61 +206,53 @@ body {
   font-size: 12px; color: #8d7f9e; letter-spacing: 1px;
 }
 
-/* ================= GitHub Star 常驻引导 ================= */
-.github-star-bar {
-  position: absolute; z-index: 60;
-  display: flex; flex-direction: column; align-items: center; gap: 4px;
+/* ================= GitHub Star 徽章（右上角常驻） ================= */
+.github-star-badge {
+  position: absolute; top: 14px; right: 14px; z-index: 70;
+  display: flex; align-items: center; gap: 9px;
+  max-width: 58px; overflow: hidden;
   text-decoration: none;
-  background: rgba(20, 0, 0, .72);
-  border: 2px solid #e62e2e;
-  border-radius: 12px;
-  padding: 10px 16px;
-  box-shadow: 0 4px 20px rgba(230, 46, 46, .35), inset 0 0 12px rgba(255, 60, 60, .08);
-  transition: transform .15s ease, box-shadow .15s ease, background .15s ease;
+  padding: 9px 11px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #24292f 0%, #0d1117 100%);
+  border: 1.5px solid rgba(255, 255, 255, .14);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, .5);
+  transition: max-width .45s cubic-bezier(.4, 0, .2, 1), box-shadow .25s ease, border-color .25s ease;
 }
-.github-star-bar:hover {
-  transform: translateY(-2px);
-  background: rgba(40, 0, 0, .82);
-  box-shadow: 0 6px 28px rgba(255, 60, 60, .45);
+.github-star-badge:hover {
+  max-width: 460px;
+  border-color: var(--neon-yellow);
+  box-shadow: 0 6px 26px rgba(255, 209, 102, .4);
 }
-.github-star-label {
-  font-family: 'ZCOOL KuaiLe', cursive;
-  font-size: 15px; letter-spacing: 2px;
-  color: #ff4d4d;
-  text-shadow: 0 0 10px rgba(255, 77, 77, .5);
+.gsb-octocat {
+  width: 22px; height: 22px; flex: none;
+  color: #fff;
+}
+.gsb-star {
+  position: absolute; top: 4px; right: 6px;
+  font-size: 13px; line-height: 1;
+  color: var(--neon-yellow);
+  text-shadow: 0 0 8px rgba(255, 209, 102, .9);
+  animation: gsbStarPulse 1.6s ease-in-out infinite;
+}
+@keyframes gsbStarPulse {
+  0%, 100% { transform: scale(1); opacity: .9; }
+  50% { transform: scale(1.35); opacity: 1; }
+}
+.gsb-text {
+  display: flex; flex-direction: column; gap: 1px;
   white-space: nowrap;
 }
-.github-star-url {
-  font-size: 11px; letter-spacing: 0.2px;
-  color: #ff6b6b;
-  text-decoration: underline;
-  word-break: break-all;
-  text-align: center;
-  line-height: 1.35;
+.gsb-text b {
+  font-family: 'ZCOOL KuaiLe', cursive;
+  font-size: 14px; font-weight: 400; letter-spacing: 1px;
+  color: var(--neon-yellow);
 }
-/* 首页：居中 */
-#game.is-title .github-star-bar {
-  left: 50%; top: 50%;
-  transform: translate(-50%, -50%);
-  max-width: min(520px, 92%);
+.gsb-text i {
+  font-style: normal;
+  font-size: 11px; letter-spacing: .2px;
+  color: #aeb6c2;
 }
-#game.is-title .github-star-bar:hover {
-  transform: translate(-50%, calc(-50% - 2px));
-}
-/* 游戏中：右上角 */
-#game.is-playing .github-star-bar {
-  top: 12px; right: 12px; left: auto;
-  transform: none;
-  align-items: flex-end;
-  max-width: min(280px, 46vw);
-  padding: 8px 12px;
-  border-radius: 10px;
-}
-#game.is-playing .github-star-bar:hover {
-  transform: translateY(-2px);
-}
-#game.is-playing .github-star-label { font-size: 13px; }
-#game.is-playing .github-star-url { font-size: 10px; text-align: right; }
 .title-cart {
   position: absolute; bottom: 11%; left: 50%;
   transform: translateX(-50%) scale(1.15);
