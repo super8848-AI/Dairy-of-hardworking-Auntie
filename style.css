@@ -201,38 +201,66 @@ body {
 }
 .game-subtitle { margin-top: 14px; font-weight: 300; letter-spacing: 6px; color: #cdbfe0; }
 #scene-title .btn-big { margin-top: 36px; position: relative; z-index: 9; }
-.title-footer {
-  position: absolute; bottom: 14px; left: 0; right: 0; z-index: 9;
-  display: flex; flex-direction: column; align-items: center; gap: 8px;
-}
-.star-cta-wrap {
-  display: flex; flex-direction: column; align-items: center; gap: 5px;
-}
-.star-repo-link {
-  font-size: 11px; letter-spacing: 0.3px; text-decoration: underline;
-  color: #b9a98c; word-break: break-all; text-align: center;
-  max-width: 92%; padding: 0 8px;
-  transition: color .15s ease;
-}
-.star-repo-link:hover { color: var(--neon-yellow); }
-.star-cta {
-  display: inline-flex; align-items: center; gap: 4px;
-  font-size: 13px; letter-spacing: 1px; text-decoration: none;
-  color: var(--neon-yellow);
-  background: rgba(0, 0, 0, .35);
-  border: 1px solid rgba(255, 209, 102, .45);
-  border-radius: 999px;
-  padding: 7px 18px;
-  transition: transform .15s ease, background .15s ease, box-shadow .15s ease;
-}
-.star-cta:hover {
-  transform: translateY(-2px);
-  background: rgba(255, 209, 102, .12);
-  box-shadow: 0 0 16px rgba(255, 209, 102, .25);
-}
 .disclaimer {
+  position: absolute; bottom: 14px; left: 0; right: 0; z-index: 9;
   font-size: 12px; color: #8d7f9e; letter-spacing: 1px;
 }
+
+/* ================= GitHub Star 常驻引导 ================= */
+.github-star-bar {
+  position: absolute; z-index: 60;
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+  text-decoration: none;
+  background: rgba(20, 0, 0, .72);
+  border: 2px solid #e62e2e;
+  border-radius: 12px;
+  padding: 10px 16px;
+  box-shadow: 0 4px 20px rgba(230, 46, 46, .35), inset 0 0 12px rgba(255, 60, 60, .08);
+  transition: transform .15s ease, box-shadow .15s ease, background .15s ease;
+}
+.github-star-bar:hover {
+  transform: translateY(-2px);
+  background: rgba(40, 0, 0, .82);
+  box-shadow: 0 6px 28px rgba(255, 60, 60, .45);
+}
+.github-star-label {
+  font-family: 'ZCOOL KuaiLe', cursive;
+  font-size: 15px; letter-spacing: 2px;
+  color: #ff4d4d;
+  text-shadow: 0 0 10px rgba(255, 77, 77, .5);
+  white-space: nowrap;
+}
+.github-star-url {
+  font-size: 11px; letter-spacing: 0.2px;
+  color: #ff6b6b;
+  text-decoration: underline;
+  word-break: break-all;
+  text-align: center;
+  line-height: 1.35;
+}
+/* 首页：居中 */
+#game.is-title .github-star-bar {
+  left: 50%; top: 50%;
+  transform: translate(-50%, -50%);
+  max-width: min(520px, 92%);
+}
+#game.is-title .github-star-bar:hover {
+  transform: translate(-50%, calc(-50% - 2px));
+}
+/* 游戏中：右上角 */
+#game.is-playing .github-star-bar {
+  top: 12px; right: 12px; left: auto;
+  transform: none;
+  align-items: flex-end;
+  max-width: min(280px, 46vw);
+  padding: 8px 12px;
+  border-radius: 10px;
+}
+#game.is-playing .github-star-bar:hover {
+  transform: translateY(-2px);
+}
+#game.is-playing .github-star-label { font-size: 13px; }
+#game.is-playing .github-star-url { font-size: 10px; text-align: right; }
 .title-cart {
   position: absolute; bottom: 11%; left: 50%;
   transform: translateX(-50%) scale(1.15);

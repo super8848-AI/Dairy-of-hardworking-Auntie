@@ -40,6 +40,8 @@ const CART_HTML = `
 function showScene(id) {
   document.querySelectorAll(".scene").forEach((s) => s.classList.remove("active"));
   $(id).classList.add("active");
+  $("game").classList.toggle("is-title", id === "scene-title");
+  $("game").classList.toggle("is-playing", id !== "scene-title");
 }
 
 /* ---------- 弹窗 ---------- */
