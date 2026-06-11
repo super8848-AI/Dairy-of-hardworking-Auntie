@@ -9,8 +9,21 @@ const state = {
   priceEach: 16,
   sold: 0,
   profit: 0,
+  reputation: 0,
+  footTrafficMult: 1,
   unlockShown: false,
+  speechUnlockShown: false,
   selling: false,
+  achievements: [],
+};
+
+const ACHIEVEMENTS = {
+  speech: {
+    id: "speech",
+    title: "北大演讲",
+    desc: "卖出 30 根鹅腿，受邀北大演讲",
+    threshold: 30,
+  },
 };
 
 /* ---------- 阿姨三轮车（注入三个场景） ---------- */
@@ -34,7 +47,29 @@ const CART_HTML = `
     <div class="wheel w3"></div>
   </div>`;
 
-["title-cart", "ride-cart", "sell-cart"].forEach((id) => ($(id).innerHTML = CART_HTML));
+["title-cart", "sell-cart"].forEach((id) => ($(id).innerHTML = CART_HTML));
+
+/* ---------- 面包车（进货驮冻腿回家） ---------- */
+const VAN_HTML = `
+  <div class="van-rig">
+    <div class="van-body">
+      <div class="van-cab">
+        <div class="van-window"></div>
+        <div class="auntie van-driver">
+          <div class="a-hair"></div>
+          <div class="a-face"></div>
+          <div class="a-smile"></div>
+          <div class="a-body"></div>
+        </div>
+      </div>
+      <div class="van-cargo">
+        <span>冻腿</span>
+        <span class="van-cargo-tag">× 一车</span>
+      </div>
+    </div>
+    <div class="van-wheel w1"></div>
+    <div class="van-wheel w2"></div>
+  </div>`;
 
 /* ---------- 场景切换 ---------- */
 function showScene(id) {
@@ -66,10 +101,35 @@ function updateBoard() {
   $("profit").textContent = state.profit.toFixed(1);
   $("sold-count").textContent = state.sold;
   $("cost-each").textContent = state.costEach;
+  $("reputation").textContent = state.reputation.toLocaleString();
+  $("foot-traffic").textContent = Math.round(state.footTrafficMult * 100) + "%";
+  renderAchievements();
   const m = document.querySelector(".board-money");
   m.classList.remove("bump");
   void m.offsetWidth;
   m.classList.add("bump");
+}
+
+function renderAchievements() {
+  const box = $("achievement-list");
+  if (!state.achievements.length) {
+    box.innerHTML = "";
+    return;
+  }
+  box.innerHTML = state.achievements
+    .map((a) => `<span class="ach-badge" title="${a.desc}">🏅 ${a.title}</span>`)
+    .join("");
+}
+
+function unlockAchievement(key) {
+  const ach = ACHIEVEMENTS[key];
+  if (!ach || state.achievements.some((a) => a.id === ach.id)) return;
+  state.achievements.push(ach);
+  renderAchievements();
+}
+
+function trafficDelay(ms) {
+  return Math.max(180, Math.round(ms / state.footTrafficMult));
 }
 
 /* ================= 1. 标题 ================= */
@@ -103,7 +163,7 @@ $("pick-duck").onclick = () => {
 $("pick-goose").onclick = () => {
   showModal(
     "灵魂拷问",
-    "你确定购买<b>正品鹅腿</b>吗？<br>这会让鸭腿太子买不起别野！",
+    "你确定购买<b>正品鹅腿</b>吗？<br>这会让鸭腿太子买不起朝阳区别野！",
     [
       {
         label: "我要做良心阿姨",
@@ -118,7 +178,7 @@ $("pick-goose").onclick = () => {
         label: "算了，还是鸭腿吧",
         ghost: true,
         onClick: () => {
-          setMarketDialog("鹅腿阿姨", "嗯，别野要紧。还是看看鸭腿吧……");
+          setMarketDialog("鹅腿阿姨", "嗯，朝阳区别野要紧。还是看看鸭腿吧……");
         },
       },
     ]
@@ -129,16 +189,19 @@ $("pick-goose").onclick = () => {
 function startRide(dest) {
   showScene("scene-ride");
   const cart = $("ride-cart");
-  const rig = cart.querySelector(".cart-rig");
-  $("ride-label").textContent =
-    dest === "home" ? "🚲 蹬着三轮车，把一车冻腿驮回出租屋……" : "🚲 夜幕降临，蹬车赶往北京大学东南门……";
+  const isHome = dest === "home";
+  cart.innerHTML = isHome ? VAN_HTML : CART_HTML;
+  const rig = cart.querySelector(isHome ? ".van-rig" : ".cart-rig");
+  $("ride-label").textContent = isHome
+    ? "🚐 开着面包车，把一车冻腿驮回昌平区小别野……"
+    : "🚲 夜幕降临，蹬着三轮车赶往北京大学西南门……";
   cart.classList.remove("go");
   void cart.offsetWidth;
-  rig.classList.add("pedaling");
+  rig.classList.add(isHome ? "driving" : "pedaling");
   cart.classList.add("go");
   setTimeout(() => {
-    rig.classList.remove("pedaling");
-    if (dest === "home") enterKitchen();
+    rig.classList.remove(isHome ? "driving" : "pedaling");
+    if (isHome) enterKitchen();
     else enterSell();
   }, 4600);
 }
@@ -159,7 +222,7 @@ const PROCESS_STEPS = [
   },
   {
     title: "老卤卤制",
-    desc: "下锅卤制，卤前吸盐水、卤后吸汤汁，里里外外喝得饱饱的。颜色一上，香味一出，气质立马不一样了。",
+    desc: "下锅卤制，记得加葱——葱香一飘，卤前吸盐水、卤后吸汤汁，里里外外喝得饱饱的。颜色一上，香味一出，气质立马不一样了。",
     duration: 3000,
     apply: () => {
       $("pot").classList.remove("hidden");
@@ -265,7 +328,7 @@ function enterSell() {
   $("scoreboard").classList.remove("hidden");
   updateBoard();
   state.selling = true;
-  setTimeout(nextCustomer, 1200);
+  setTimeout(nextCustomer, trafficDelay(1200));
 }
 
 function makeStudent(s) {
@@ -294,6 +357,13 @@ function nextCustomer() {
   if (!state.selling) return;
   hideBubbles();
 
+  // 卖出30根 → 解锁北大演讲成就
+  if (state.sold >= ACHIEVEMENTS.speech.threshold && !state.speechUnlockShown) {
+    state.speechUnlockShown = true;
+    showSpeechEvent();
+    return;
+  }
+
   // 卖出10根 → 解锁国贸副本
   if (state.sold >= 10 && !state.unlockShown) {
     state.unlockShown = true;
@@ -315,7 +385,7 @@ function nextCustomer() {
     say("bubble-student", s.name, s.ask);
     $("btn-sell").classList.remove("hidden");
     $("btn-sell").disabled = false;
-  }, 900);
+  }, trafficDelay(900));
 }
 
 function playGreenScene() {
@@ -327,9 +397,9 @@ function playGreenScene() {
         say("bubble-student", "女同学", "哦哦，写写阿姨！");
         $("btn-sell").classList.remove("hidden");
         $("btn-sell").disabled = false;
-      }, 1800);
-    }, 1600);
-  }, 900);
+      }, trafficDelay(1800));
+    }, trafficDelay(1600));
+  }, trafficDelay(900));
 }
 
 $("btn-sell").onclick = () => {
@@ -358,10 +428,10 @@ $("btn-sell").onclick = () => {
         : THOUGHTS[thoughtIndex % THOUGHTS.length];
       thoughtIndex++;
       say("bubble-think", "阿姨的内心戏", t);
-      setTimeout(nextCustomer, 2400);
-    }, 1500);
+      setTimeout(nextCustomer, trafficDelay(2400));
+    }, trafficDelay(1500));
   } else {
-    setTimeout(nextCustomer, 1900);
+    setTimeout(nextCustomer, trafficDelay(1900));
   }
 };
 
@@ -376,6 +446,36 @@ function floatMoney(gain) {
   setTimeout(() => el.remove(), 1300);
 }
 
+function showSpeechEvent() {
+  state.reputation += 10000;
+  state.footTrafficMult = 11;
+  unlockAchievement("speech");
+  updateBoard();
+
+  const summary = state.honest
+    ? `你卖出了 <b>30 根正品鹅腿</b>，北大同学联名邀请阿姨进校演讲。<br>「良心摊主」的故事传遍未名湖畔——虽然路虎还是没着落。`
+    : `你卖出了 <b>30 根「鹅腿」</b>，北大同学排队求阿姨分享创业心得。<br>阿姨站在讲台上，台下掌声雷动：「一根鸭腿，也能卤出鹅腿的人生！」`;
+
+  showModal(
+    "🏆 成就解锁：北大演讲",
+    summary +
+      `<br><br><b style="color:#9e2b2b">声望值 +10,000</b>（当前 <b>${state.reputation.toLocaleString()}</b>）<br>` +
+      `<b style="color:#2e7d44">人流量 +1000%</b>（当前 <b>${Math.round(state.footTrafficMult * 100)}%</b>）<br><br>` +
+      `<span style="font-size:13px;color:#6b5b3e">同学们蜂拥而至，北大西南门快被挤爆了……</span>`,
+    [
+      {
+        label: "继续摆摊，趁热打铁",
+        onClick: () => setTimeout(nextCustomer, trafficDelay(800)),
+      },
+      {
+        label: "重新开始",
+        ghost: true,
+        onClick: () => location.reload(),
+      },
+    ]
+  );
+}
+
 function showUnlock() {
   const summary = state.honest
     ? `你卖出了 10 根<b>正品鹅腿</b>，收益 <b>¥${state.profit.toFixed(1)}</b>。<br>阿姨叹了口气：良心摊主，路虎还是买不起，但睡得着觉。`
@@ -386,7 +486,7 @@ function showUnlock() {
     [
       {
         label: "继续在北大卖",
-        onClick: () => setTimeout(nextCustomer, 800),
+        onClick: () => setTimeout(nextCustomer, trafficDelay(800)),
       },
       {
         label: "⭐ GitHub 点 Star",
