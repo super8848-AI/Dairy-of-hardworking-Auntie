@@ -14,19 +14,18 @@
 5. **隐藏剧情**：有同学发现鹅腿是绿色的……
 6. **卖出 10 根**：解锁新副本「国贸」（敬请期待）
 
-## 运行
+## 在线游玩（点开即玩）
 
-无任何依赖，直接用浏览器打开：
+**https://super8848-ai.github.io/Dairy-of-hardworking-Auntie/**
+
+手机或电脑浏览器打开即可，无需安装。
+
+## 本地运行
 
 ```bash
 open index.html
-```
-
-或起一个本地服务器：
-
-```bash
+# 或
 python3 -m http.server 8080
-# 浏览器访问 http://localhost:8080
 ```
 
 ## 技术
