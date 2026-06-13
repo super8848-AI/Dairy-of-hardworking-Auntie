@@ -115,6 +115,108 @@ body {
   opacity: .55;
 }
 
+#game.location-guomao #sky {
+  background: linear-gradient(180deg, #87b8e8 0%, #b8d4f0 45%, #dce8f5 72%, #e8ecf0 100%);
+}
+#game.location-guomao #stars { opacity: 0; }
+#game.location-guomao .skyline-far {
+  --b: #7a8fa8;
+  bottom: 14%; height: 52%;
+  background:
+    linear-gradient(var(--b), var(--b)) 2% 100% / 8% 88%,
+    linear-gradient(var(--b), var(--b)) 12% 100% / 6% 72%,
+    linear-gradient(var(--b), var(--b)) 20% 100% / 10% 95%,
+    linear-gradient(var(--b), var(--b)) 32% 100% / 7% 68%,
+    linear-gradient(var(--b), var(--b)) 42% 100% / 9% 92%,
+    linear-gradient(var(--b), var(--b)) 55% 100% / 11% 78%,
+    linear-gradient(var(--b), var(--b)) 68% 100% / 8% 98%,
+    linear-gradient(var(--b), var(--b)) 78% 100% / 10% 82%,
+    linear-gradient(var(--b), var(--b)) 90% 100% / 7% 70%,
+    linear-gradient(var(--b), var(--b)) 98% 100% / 9% 86%;
+  background-repeat: no-repeat;
+}
+#game.location-guomao .skyline-near {
+  --b: #5a6d85;
+  bottom: 14%; height: 38%;
+  background:
+    linear-gradient(var(--b), var(--b)) 5% 100% / 14% 75%,
+    linear-gradient(var(--b), var(--b)) 22% 100% / 9% 100%,
+    linear-gradient(var(--b), var(--b)) 35% 100% / 12% 62%,
+    linear-gradient(var(--b), var(--b)) 50% 100% / 10% 88%,
+    linear-gradient(var(--b), var(--b)) 65% 100% / 13% 70%,
+    linear-gradient(var(--b), var(--b)) 82% 100% / 9% 94%,
+    linear-gradient(var(--b), var(--b)) 94% 100% / 11% 66%;
+  background-repeat: no-repeat;
+}
+#game.location-guomao .skyline-near::after {
+  background-image:
+    radial-gradient(3px 4px at 10% 55%, rgba(255,240,180,.9) 50%, transparent 51%),
+    radial-gradient(3px 4px at 24% 42%, rgba(255,240,180,.7) 50%, transparent 51%),
+    radial-gradient(3px 4px at 38% 68%, rgba(255,240,180,.8) 50%, transparent 51%),
+    radial-gradient(3px 4px at 52% 35%, rgba(255,240,180,.9) 50%, transparent 51%),
+    radial-gradient(3px 4px at 66% 58%, rgba(255,240,180,.6) 50%, transparent 51%),
+    radial-gradient(3px 4px at 80% 72%, rgba(255,240,180,.8) 50%, transparent 51%);
+}
+#game.location-guomao #ground {
+  background: linear-gradient(180deg, #8a9098 0%, #5c626a 100%);
+  border-top-color: #aab0b8;
+}
+#game.location-guomao #ground::before {
+  background: repeating-linear-gradient(90deg, #fff 0 30px, transparent 30px 60px);
+  opacity: .35;
+}
+
+/* 音效按钮 */
+.btn-audio {
+  position: absolute; top: 16px; right: 72px; z-index: 55;
+  width: 40px; height: 40px; border-radius: 50%;
+  border: 2px solid rgba(255,209,102,.5);
+  background: rgba(10,14,32,.75);
+  font-size: 18px; cursor: pointer;
+  transition: transform .15s ease, background .15s ease;
+}
+.btn-audio:hover { transform: scale(1.08); background: rgba(20,28,56,.9); }
+.btn-audio.muted { opacity: .55; }
+
+/* 收钱闪光 */
+.pay-flash {
+  position: absolute; inset: 0; z-index: 45; pointer-events: none;
+  background: radial-gradient(circle at 50% 70%, rgba(255,209,102,.45), transparent 65%);
+  opacity: 0;
+}
+.pay-flash.active {
+  animation: payFlash .35s ease-out forwards;
+}
+@keyframes payFlash {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+.coin-burst {
+  position: absolute; inset: 0; pointer-events: none; z-index: 42;
+}
+.coin-particle {
+  position: absolute; width: 14px; height: 14px; border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #fff8c8, var(--money) 55%, #c9a030);
+  border: 1px solid #e8b830;
+  animation: coinFly .7s ease-out forwards;
+}
+@keyframes coinFly {
+  from { transform: translate(0,0) scale(1); opacity: 1; }
+  to { transform: translate(var(--dx), var(--dy)) scale(.3); opacity: 0; }
+}
+#game.pay-shake { animation: payShake .28s ease; }
+@keyframes payShake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-4px); }
+  75% { transform: translateX(4px); }
+}
+.btn-sell.selling-pop { animation: sellPop .25s cubic-bezier(.34,1.56,.64,1); }
+@keyframes sellPop {
+  0% { transform: translateX(-50%) scale(1); }
+  50% { transform: translateX(-50%) scale(1.12); }
+  100% { transform: translateX(-50%) scale(1); }
+}
+
 /* ================= 场景容器 ================= */
 .scene {
   position: absolute; inset: 0;
@@ -702,7 +804,53 @@ body {
 .sell-cart { position: absolute; bottom: 9%; left: 7%; }
 
 /* 学生 */
-.student-spot { position: absolute; bottom: 10%; left: 42%; }
+.student-spot { position: absolute; bottom: 10%; left: 42%; z-index: 12; }
+.student-queue {
+  position: absolute; bottom: 10%; left: 52%; right: 4%;
+  display: flex; align-items: flex-end; gap: 6px;
+  z-index: 10; pointer-events: none;
+}
+.queue-student {
+  position: relative; width: 36px; height: 72px;
+  opacity: calc(1 - var(--q-i) * 0.08);
+  transform: scale(calc(1 - var(--q-i) * 0.04));
+  animation: queueBob 1.2s ease-in-out infinite;
+  animation-delay: calc(var(--q-i) * 0.15s);
+}
+@keyframes queueBob {
+  0%, 100% { transform: scale(calc(1 - var(--q-i) * 0.04)) translateY(0); }
+  50% { transform: scale(calc(1 - var(--q-i) * 0.04)) translateY(-3px); }
+}
+.queue-student .qs-head {
+  position: absolute; top: 0; left: 8px; width: 20px; height: 18px;
+  background: #f6d3ae; border-radius: 8px 8px 10px 10px;
+}
+.queue-student .qs-head::before {
+  content: ""; position: absolute; top: -4px; left: 2px; width: 16px; height: 10px;
+  background: #222; border-radius: 8px 8px 2px 2px;
+}
+.queue-student .qs-body {
+  position: absolute; top: 20px; left: 6px; width: 24px; height: 32px;
+  background: var(--s-color, #3f6fb5); border-radius: 8px 8px 4px 4px;
+}
+#game.pku-queue-active .student-spot .student {
+  box-shadow: 0 0 0 3px rgba(255,209,102,.35);
+}
+#game.pku-queue-active::after {
+  content: "同学们排起了长队";
+  position: absolute; bottom: 24%; right: 6%;
+  font-family: 'ZCOOL KuaiLe', cursive;
+  font-size: 14px; letter-spacing: 2px;
+  color: var(--neon-yellow);
+  background: rgba(0,0,0,.45);
+  padding: 4px 14px; border-radius: 999px;
+  border: 1px solid rgba(255,209,102,.4);
+  animation: popIn .4s ease both;
+  z-index: 8;
+}
+#game.location-guomao::after { display: none; }
+#game.location-guomao .student-queue { display: none !important; }
+
 .student {
   position: relative; width: 64px; height: 120px;
   animation: walkIn .9s ease both;
@@ -718,6 +866,92 @@ body {
 .s-body { position: absolute; top: 38px; left: 10px; width: 44px; height: 46px; border-radius: 12px 12px 6px 6px; background: var(--s-color, #3f6fb5); }
 .s-legs { position: absolute; top: 82px; left: 18px; width: 28px; height: 34px; background: #2e3550; border-radius: 0 0 8px 8px; }
 .s-bag { position: absolute; top: 42px; left: 0; width: 12px; height: 30px; background: #e0a23c; border-radius: 6px; }
+
+/* 白领（国贸） */
+.worker {
+  position: relative; width: 68px; height: 128px;
+  animation: walkIn .9s ease both;
+}
+.worker.leave { animation: walkOut .9s ease both; }
+.w-hair { position: absolute; top: 0; left: 14px; width: 38px; height: 22px; background: #1a1a1a; border-radius: 14px 14px 4px 4px; }
+.w-face { position: absolute; top: 8px; left: 16px; width: 34px; height: 30px; background: #f6d3ae; border-radius: 10px 10px 12px 12px; }
+.w-face::before, .w-face::after { content: ""; position: absolute; top: 12px; width: 4px; height: 4px; background: #222; border-radius: 50%; }
+.w-face::before { left: 8px; } .w-face::after { right: 8px; }
+.w-suit {
+  position: absolute; top: 36px; left: 8px; width: 50px; height: 52px;
+  background: linear-gradient(180deg, var(--w-color, #2c3e50), #1a2530);
+  border-radius: 10px 10px 4px 4px;
+}
+.w-tie {
+  position: absolute; top: 42px; left: 28px; width: 8px; height: 28px;
+  background: var(--tie-color, #c0392b); border-radius: 2px 2px 6px 6px;
+}
+.w-legs { position: absolute; top: 86px; left: 16px; width: 34px; height: 38px; background: #1e2430; border-radius: 0 0 8px 8px; }
+.w-briefcase {
+  position: absolute; top: 58px; left: -6px; width: 16px; height: 22px;
+  background: #5c4033; border: 2px solid #3d2a1f; border-radius: 3px;
+}
+.worker.skeptic .w-face { background: #f0c8a8; }
+.worker.skeptic .w-suit { background: linear-gradient(180deg, #4a5568, #2d3748); }
+
+/* 国贸 CBD 前景 */
+.guomao-cbd {
+  position: absolute; left: 50%; transform: translateX(-50%);
+  bottom: 12%; width: 520px; height: 280px;
+}
+.cbd-tower {
+  position: absolute; bottom: 0;
+  background: linear-gradient(180deg, #a8b8cc, #6b7d94 40%, #4a5868);
+  border: 2px solid #3a4555;
+  border-radius: 4px 4px 0 0;
+}
+.cbd-tower.t1 { left: 0; width: 72px; height: 200px; }
+.cbd-tower.t2 { left: 88px; width: 96px; height: 260px; }
+.cbd-tower.t3 { right: 88px; width: 88px; height: 220px; }
+.cbd-tower.t4 { right: 0; width: 68px; height: 170px; }
+.cbd-win {
+  position: absolute; inset: 12px 8px auto 8px; height: 70%;
+  background-image:
+    repeating-linear-gradient(180deg, rgba(255,240,200,.7) 0 8px, transparent 8px 16px),
+    repeating-linear-gradient(90deg, rgba(255,240,200,.5) 0 10px, transparent 10px 20px);
+  opacity: .6;
+}
+.cbd-plaque {
+  position: absolute; bottom: 8px; left: 50%; transform: translateX(-50%);
+  font-family: 'ZCOOL KuaiLe', cursive;
+  font-size: 26px; letter-spacing: 10px;
+  color: #1a2530; background: rgba(255,255,255,.85);
+  border: 3px solid #8899aa; border-radius: 8px;
+  padding: 6px 22px;
+}
+.sell-location-label {
+  top: 56px; font-size: 17px;
+}
+.sell-cart.fleeing {
+  animation: cartFlee 2.2s ease-in forwards;
+  z-index: 30;
+}
+@keyframes cartFlee {
+  0% { left: 7%; opacity: 1; }
+  15% { transform: scale(1.05); }
+  100% { left: -120%; opacity: .3; transform: scale(.9); }
+}
+
+.bubble-skeptic {
+  bottom: 48%; left: 38%;
+  border: 2px solid #c0392b;
+  background: #fff5f0;
+}
+.bubble-skeptic::after { left: 40px; border-top-color: #fff5f0; }
+.bubble-skeptic .b-name { color: #c0392b; }
+
+.btn-deflect {
+  position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%);
+  z-index: 25;
+  background: linear-gradient(180deg, #ffb347, #e67e22);
+  border-bottom-color: #a0520d;
+  color: #fff;
+}
 
 /* 气泡 */
 .bubble {
